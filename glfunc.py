@@ -2,8 +2,7 @@ import OpenGL.GL as gl
 from OpenGL.GL import shaders
 
 
-def get_shader_log(shader) -> str:
-    # It is sometimes str and sometimes bytes.
+def get_shader_log(shader):
     log = gl.glGetShaderInfoLog(shader)
 
     try:
@@ -37,7 +36,6 @@ class ShadowMap:
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_BORDER)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_BORDER)
-        # gl.glTexParameterfv(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, (1.0, 1.0, 1.0, 1.0))
 
         gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, self.__depthMapFbo)
         gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_DEPTH_ATTACHMENT, gl.GL_TEXTURE_2D, self.__depthMapTex, 0)
@@ -66,7 +64,7 @@ class ShadowMap:
         return self.__depthMapTex
 
     @staticmethod
-    def _getProgram() -> int:
+    def _getProgram():
         with open("shader_source\\vs_shadow.glsl") as file:
             vertexShader = shaders.compileShader(file.read(), gl.GL_VERTEX_SHADER)
         log = get_shader_log(vertexShader)

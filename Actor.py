@@ -24,25 +24,24 @@ class Actor:
         self.lookVerDeg = 0.0
         self.lookHorDeg = 0.0
 
-        self.moveSpeed = 10.0
-        self.rotateSpeed = 250.0
-        self.rotateMouseSpeed = 0.05
-
-        self.flySpeed = 10
+        self.moveSpeed = 10.0  # 시뮬레이션 속력 계수
+        self.rotateSpeed = 250.0  # 시뮬레이션 회전 속력 계수
+        self.rotateMouseSpeed = 0.05  # 마우스 회전 속력 계수 (미사용)
+        self.flySpeed = 10  # 비행 속력 계수 (미사용)
 
     # 업데이트 함수
     def updateActor(self, term):
         if self.physics:
             self.applyGravity(term)
 
-    # 이동 함수
+    # 이동 함수 (자율 주행)
     def Automove(self, term, speed):
         if speed > 0:
-            xVec, zVec = mm.getMoveVector(abs(speed) / 15, mm.Angle(self.lookHorDeg + 90))
+            xVec, zVec = mm.getMoveVector(abs(speed) / 40, mm.Angle(self.lookHorDeg + 90))
             self.pos_l[0] += xVec * term
             self.pos_l[2] -= zVec * term
         elif speed < 0:
-            xVec, zVec = mm.getMoveVector(abs(speed) / 15, mm.Angle(self.lookHorDeg + 90))
+            xVec, zVec = mm.getMoveVector(abs(speed) / 40, mm.Angle(self.lookHorDeg + 90))
             self.pos_l[0] -= xVec * term
             self.pos_l[2] += zVec * term
         else:
@@ -50,18 +49,18 @@ class Actor:
 
         self.validateValues()
 
-    # 회전 함수
+    # 회전 함수 (자율 주행)
     def Autorotate(self, term, degree):
         if degree > 0:
-            self.lookHorDeg -= abs(degree) * term
+            self.lookHorDeg -= abs(degree) / 1 * term
         elif degree < 0:
-            self.lookHorDeg += abs(degree) * term
+            self.lookHorDeg += abs(degree) / 1 * term
         else:
             pass
 
         self.validateValues()
 
-    # 이동 함수
+    # 이동 함수 (키보드 조작)
     def move(self, term, f, b, l, r, u, d):
         if f and not b:
             xVec, zVec = mm.getMoveVector(self.moveSpeed, mm.Angle(self.lookHorDeg + 90))
@@ -88,7 +87,7 @@ class Actor:
 
         self.validateValues()
 
-    # 이동 함수 (시야 방향)
+    # 이동 함수 (시야 방향, 키보드 조작)
     def move3(self, term, f, b, l, r, u, d):
         if f and not b:
             moveVec3 = mm.getMoveVector3(mm.Angle(self.lookHorDeg + 90), mm.Angle(self.lookVerDeg))
@@ -117,14 +116,14 @@ class Actor:
 
         self.validateValues()
 
-    # 이동함수 (시야 방향)
+    # 이동함수 (시야 방향, 키보드 조작)
     def moveForward(self, distance):
         moveVec3 = mm.getMoveVector3(mm.Angle(self.lookHorDeg + 90), mm.Angle(self.lookVerDeg))
         self.pos_l[0] += moveVec3.x * distance
         self.pos_l[1] += moveVec3.y * distance
         self.pos_l[2] += moveVec3.z * distance
 
-    # 회전 함수
+    # 회전 함수 (키보드 조작)
     def rotate(self, term, u, d, l, r):
         if u and not d:
             self.lookVerDeg += self.rotateSpeed * term
